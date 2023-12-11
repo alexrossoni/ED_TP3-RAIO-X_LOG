@@ -165,27 +165,27 @@ int main() {
                 printf("---Laudos entregues em atraso: %d\n\n", totalLaudosAtrasados);
                 printf("--Tempo médio de laudos por patologia:\n");
                 if (totalLaudosNormal > 0) {
-                    printf("-Tempo médio de laudo (Normal): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosNormal / totalLaudosNormal, totalLaudosNormal);
+                    printf("-Tempo médio de laudo (Normal): %d unid. tempo\n", tempoTotalLaudosNormal / totalLaudosNormal);
                 } else {
                     printf("-Tempo médio de laudo (Normal): Não há dados\n");
                 };
                 if (totalLaudosBronquite > 0) {
-                    printf("-Tempo médio de laudo (Bronquite): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosBronquite / totalLaudosBronquite, totalLaudosBronquite);
+                    printf("-Tempo médio de laudo (Bronquite): %d unid. tempo\n", tempoTotalLaudosBronquite / totalLaudosBronquite);
                 } else {
                     printf("-Tempo médio de laudo (Bronquite): Não há dados\n");
                 };
                 if (totalLaudosPneumonia > 0) {
-                    printf("-Tempo médio de laudo (Pneumonia): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosPneumonia / totalLaudosPneumonia, totalLaudosPneumonia);
+                    printf("-Tempo médio de laudo (Pneumonia): %d unid. tempo\n", tempoTotalLaudosPneumonia / totalLaudosPneumonia);
                 } else {
                     printf("-Tempo médio de laudo (Pneumonia): Não há dados\n");
                 };
                 if (totalLaudosFraturaFemur > 0) {
-                    printf("-Tempo médio de laudo (Fratura de Femur): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosFraturaFemur / totalLaudosFraturaFemur, totalLaudosFraturaFemur);
+                    printf("-Tempo médio de laudo (Fratura de Femur): %d unid. tempo\n", tempoTotalLaudosFraturaFemur / totalLaudosFraturaFemur);
                 } else {
                     printf("-Tempo médio de laudo (Fratura de Femur): Não há dados\n");
                 };
                 if (totalLaudosApendicite > 0) {
-                    printf("-Tempo médio de laudo (Apendicite): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosApendicite / totalLaudosApendicite, totalLaudosApendicite);
+                    printf("-Tempo médio de laudo (Apendicite): %d unid. tempo\n", tempoTotalLaudosApendicite / totalLaudosApendicite);
                 } else {
                     printf("-Tempo médio de laudo (Apendicite): Não há dados\n");
                 };
