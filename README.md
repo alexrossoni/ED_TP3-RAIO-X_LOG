@@ -91,6 +91,14 @@ Foram implementadas métricas para avaliar o desempenho do sistema, incluindo o 
 #### Saída Formatada
 A saída foi formatada de maneira clara para facilitar a interpretação. Mensagens informativas, como tempo médio de laudo por patologia, são exibidas com precisão para tornar os resultados compreensíveis.
 
+#### Logging
+Foi implementado um sistema de logging que registra eventos significativos na simulação, tais como a chegada de pacientes, a ida de pacientes para fila, o início e conclusão dos exames e o início e conclusão dos laudos. Cada novo evento é registrado em um TAD chamado Log. Ao concluir a execução, o registro de eventos é armazenado em um arquivo denominado log.txt. As implementações relativas ao logging se encontram nos arquivos simulacao.c e simulacao.h.
+
+---
+
+## 👁️ Observação
+Esse programa se trata de uma simulação com eventos aleatórios com probabilidades específicas, logo, é interessante que o programa seja executado mais de uma vez a fim de ter uma noção completa de seu comportamento e funcionalidades.
+
 ---
 
 ## 👨🏽‍💻 Autor
