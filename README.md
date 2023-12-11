@@ -1,6 +1,6 @@
-# Trabalho Prático 2 de Estrutura de Dados: Simulação de Realização de Exames de Raio-X
+# Trabalho Prático 3 de Estrutura de Dados: Simulação de Realização de Exames de Raio-X com implementação de Logging
 
-Este repositório contém um programa em C que implementa a simulação de um processo de realização de exames de raio-X em um hospital, com ênfase na organização da fila para laudo médico. O programa é destinado à disciplina de Estrutura de Dados e foi desenvolvido no ambiente Ubuntu 22.04 com GCC v11 (É **fortemente recomendável** a execução do programa em um ambiente de mesma configuração).
+Este repositório contém um programa em C que implementa a simulação de um processo de realização de exames de raio-X em um hospital, com ênfase na organização da fila para laudo médico e no logging da aplicação. O programa é destinado à disciplina de Estrutura de Dados e foi desenvolvido no ambiente Ubuntu 22.04 com GCC v11 (É **fortemente recomendável** a execução do programa em um ambiente de mesma configuração).
 
 ---
 
@@ -36,12 +36,12 @@ make --version
 
 1. Clone este repositório para o seu sistema:
 ```bash
-git clone https://github.com/alexrossoni/ED_TP2-RAIO-X.git
+git clone https://github.com/alexrossoni/ED_TP3-RAIO-X_LOG.git
 ```
 
 2. Acesse o diretório do projeto:
 ```bash
-cd ED_TP2-RAIO-X
+cd ED_TP3-RAIO-X_LOG
 ```
 
 3. Compile o programa usando o Makefile:
@@ -66,7 +66,7 @@ A implementação foi estruturada usando múltiplos arquivos para promover a mod
 #### Estrutura de Dados
 O projeto utiliza algumas estruturas de dados para a simulação, sendo elas: Simulação, Paciente, Exame, Aparelho, Radiologista e Fila.
 
-  - Simulação: É a estrutura principal para a simulação, foi criada para facilitar a organização do código;
+  - Simulação: É a estrutura principal para a simulação, foi criada para facilitar a organização do código. Aqui também se encontra toda a lógica do logging;
   - Paciente: Estrutura que representa um paciente do hospital, contém Nome, CPF, Idade e ID;
   - Exame: Estrutura que representao um exame realizado em um paciente, contém ID do paciente, o instante de tempo em que o registro foi gerado e a condição (normal ou patológica) sugerida pela simulação;
   - Aparelho: Estrutura que representa um aparelho de raio-x, contém apenas seu status que pode estar disponível ou não;
