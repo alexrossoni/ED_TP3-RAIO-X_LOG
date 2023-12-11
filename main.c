@@ -7,6 +7,8 @@
 int main() {
     // Inicializa a simulação
     Simulacao simulacao = iniciarSimulacao();
+    Log *log = create_log();
+    char msg_log[255];
 
     // Lista de pacientes
     Paciente listaPacientes[100];
@@ -49,10 +51,17 @@ int main() {
     int tempoMetricas = 0;
 
     while (tempo < tempoTotalSimulacao) {
-        // 1. Chegada de pacientes
+        // 1. Chegada de pacientes com probabilidade de 20%
         if (rand() % 100 < 20) {
             int idPaciente = listaPacientes[rand() % 100].id;
+            sprintf(msg_log, "Instante: %d | O paciente com ID %d foi chegou ao hospital.", tempo, idPaciente);
+            log_event(log, msg_log);
+            msg_log[0] = '\0';
+
             enfileirar(&simulacao.filaExames, idPaciente);
+            sprintf(msg_log, "Instante: %d | O paciente com ID %d foi foi para fila de exames.", tempo, idPaciente);
+            log_event(log, msg_log);
+            msg_log[0] = '\0';
         }
         
         int aparelhoIndex;
@@ -63,11 +72,17 @@ int main() {
         if (!filaVazia(&simulacao.filaExames)) {
             ocuparAparelho(&simulacao.aparelhos[aparelhoIndex]);
             int idPaciente = desenfileirar(&simulacao.filaExames); // Retira o paciente da fila de exames e retorna seu ID
+            sprintf(msg_log, "Instante: %d | O paciente com ID %d foi realizar o exame.", tempo, idPaciente);
+            log_event(log, msg_log);
+            msg_log[0] = '\0';
 
             int tempoExame = rand() % 6 + 5; // Tempo do exame entre 5 e 10 unidades
             simulacao.tempoTotalExames += tempoExame;
+
+            // Soma o tempo de exame ao tempo de simulação
             tempo += tempoExame;
 
+            // Cada patologia/condição foi separada por índices para facilitar a codificação
             int condicao = rand() % 100 < 30 ? 1 : // 1 - Saúde Normal
                             rand() % 100 < 20 ? 2 : // 2 - Bronquite
                             rand() % 100 < 20 ? 3 : // 3 - Pneumonia
@@ -76,6 +91,9 @@ int main() {
 
             Exame exame = criarExame(idPaciente, tempoExame, condicao, 0); // 0 - Não concluído, exame iniciado com status não concluído
             inserirExame(&listaExames, exame); // Insere o exame na lista de exames realizados
+            sprintf(msg_log, "Instante: %d | Exame do paciente com ID %d foi realizado com sucesso!", tempo, idPaciente);
+            log_event(log, msg_log);
+            msg_log[0] = '\0';
 
             enfileirar(&simulacao.filaLaudos, exame.id); // Põe o exame na fila para laudo
 
@@ -88,19 +106,29 @@ int main() {
             ocuparRadiologista(&simulacao.radiologistas[radiologistaIndex]);
 
             Exame exame = desenfileirarExame(&simulacao.filaLaudos, listaPacientes, listaExames);
+            sprintf(msg_log, "Instante: %d | O paciente com ID %d foi realizar o laudo.", tempo, exame.id);
+            log_event(log, msg_log);
+            msg_log[0] = '\0';
+
             atualizarConcluido(&listaExames, exame.id, 1); // 1 - Concluído, atualiza o status do exame para concluído
 
             int tempoLaudo = rand() % 21 + 10; // Tempo do laudo entre 10 e 30 unidades
             simulacao.tempoTotalLaudos += tempoLaudo;
 
-            int tempoEntregaLaudo = rand() % 10000 + 1; // Tempo de entrega do laudo (menor que 7200 Un. de tempo está dentro do prazo, maior que 7200 Un. de tempo esta atrasado)
+            int tempoEntregaLaudo = rand() % 10000 + 1; // Gerando um tempo de entrega do laudo (menor que 7200 Un. de tempo está dentro do prazo, maior que 7200 Un. de tempo esta atrasado)
             if (tempoEntregaLaudo > 7200) {
                 totalLaudosAtrasados += 1;
             }
 
+            // Soma o tempo de preparo do laudo e o tempo de entrega ao tempo de simulação
             tempo += tempoLaudo + tempoEntregaLaudo;
 
-            // Aqui adicionamos o tempo de cada exame de acordo com a patologia e suas quantidades para usar no calculo de métricas
+            // Aqui adicionamos o tempo de cada exame de acordo com a patologia e suas quantidades para usar no calculo de métricas, lembrando que separei cada patologia por um índice:
+            // 1 - Saúde Normal;
+            // 2 - Bronquite;
+            // 3 - Pneumonia;
+            // 4 - Fratura de Fêmur;
+            // 5 - Apendicite
             if (exame.condicao == 1) {
                 tempoTotalLaudosNormal += tempoLaudo;
                 totalLaudosNormal++;
@@ -118,6 +146,10 @@ int main() {
                 totalLaudosApendicite++;
             }
 
+            sprintf(msg_log, "Instante: %d | Laudo do paciente com ID %d foi realizado com sucesso!", tempo, exame.id);
+            log_event(log, msg_log);
+            msg_log[0] = '\0';
+
             liberarRadiologista(&simulacao.radiologistas[radiologistaIndex]);
         }
 
@@ -133,27 +165,27 @@ int main() {
                 printf("---Laudos entregues em atraso: %d\n\n", totalLaudosAtrasados);
                 printf("--Tempo médio de laudos por patologia:\n");
                 if (totalLaudosNormal > 0) {
-                    printf("-Tempo médio de laudo (Normal): %d unid. tempo\n", tempoTotalLaudosNormal / totalLaudosNormal);
+                    printf("-Tempo médio de laudo (Normal): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosNormal / totalLaudosNormal, totalLaudosNormal);
                 } else {
                     printf("-Tempo médio de laudo (Normal): Não há dados\n");
                 };
                 if (totalLaudosBronquite > 0) {
-                    printf("-Tempo médio de laudo (Bronquite): %d unid. tempo\n", tempoTotalLaudosBronquite / totalLaudosBronquite);
+                    printf("-Tempo médio de laudo (Bronquite): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosBronquite / totalLaudosBronquite, totalLaudosBronquite);
                 } else {
                     printf("-Tempo médio de laudo (Bronquite): Não há dados\n");
                 };
                 if (totalLaudosPneumonia > 0) {
-                    printf("-Tempo médio de laudo (Pneumonia): %d unid. tempo\n", tempoTotalLaudosPneumonia / totalLaudosPneumonia);
+                    printf("-Tempo médio de laudo (Pneumonia): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosPneumonia / totalLaudosPneumonia, totalLaudosPneumonia);
                 } else {
                     printf("-Tempo médio de laudo (Pneumonia): Não há dados\n");
                 };
                 if (totalLaudosFraturaFemur > 0) {
-                    printf("-Tempo médio de laudo (Fratura de Femur): %d unid. tempo\n", tempoTotalLaudosFraturaFemur / totalLaudosFraturaFemur);
+                    printf("-Tempo médio de laudo (Fratura de Femur): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosFraturaFemur / totalLaudosFraturaFemur, totalLaudosFraturaFemur);
                 } else {
                     printf("-Tempo médio de laudo (Fratura de Femur): Não há dados\n");
                 };
                 if (totalLaudosApendicite > 0) {
-                    printf("-Tempo médio de laudo (Apendicite): %d unid. tempo\n", tempoTotalLaudosApendicite / totalLaudosApendicite);
+                    printf("-Tempo médio de laudo (Apendicite): %d unid. tempo | Qtd. de laudos: %d\n", tempoTotalLaudosApendicite / totalLaudosApendicite, totalLaudosApendicite);
                 } else {
                     printf("-Tempo médio de laudo (Apendicite): Não há dados\n");
                 };
@@ -163,6 +195,7 @@ int main() {
         }
 
         tempoMetricas++;
+        tempo++;
 
         sleep(1);
     }
@@ -170,6 +203,8 @@ int main() {
     // Libera a memória utilizada pelas filas
     destruirFila(&simulacao.filaLaudos);
     destruirFila(&simulacao.filaExames);
+
+    save_log_to_file(log, "log.txt");
 
     printf("\n---Fim de expediente no hospital.\n");
 
